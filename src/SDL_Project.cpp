@@ -18,7 +18,7 @@ float movementSpeed = 10.0;
 int velX = 3;
 int velY = 3;
 
-int player1Score = 1;
+int player1Score = 0;
 int player2Score = 0;
 SDL_Rect textDisplay;
 
@@ -124,7 +124,7 @@ int main(int argc, char* argv[])
 
     SDL_Rect ballRect;
     ballRect.x = 200;
-    ballRect.y = 200;
+    ballRect.y = HEIGHT / 2;
     ballRect.w = 20;
     ballRect.h = 20;
 
@@ -165,10 +165,23 @@ int main(int argc, char* argv[])
         ballRect.x += velX;
         ballRect.y += velY;
 
-        //comprobar colisiones con los bordes
-        if (ballRect.x < 0 || ballRect.x + ballRect.w > WIDTH)
+        //comprobar colisiones de la pelota con los bordes y sumar puntos
+        if (ballRect.x < 0)
         {
+            SDL_Delay(100);
+            ballRect.y = HEIGHT / 2;
+            ballRect.x = 200;
             velX = -velX;
+            player2Score++;
+        }
+
+        if (ballRect.x + ballRect.w > WIDTH)
+        {
+            SDL_Delay(100);
+            ballRect.y = HEIGHT / 2;
+            ballRect.x = 1180;
+            velX = -velX;
+            player1Score++;
         }
 
         if (ballRect.y < 0 || ballRect.y + ballRect.h > HEIGHT)
@@ -195,6 +208,8 @@ int main(int argc, char* argv[])
             paddleJ2Rect.y = 0;
         }
         
+
+        // colision con las paletas
         SDL_Rect result;
 
         if (SDL_IntersectRect(&paddleJ1Rect, &ballRect, &result))
@@ -209,6 +224,7 @@ int main(int argc, char* argv[])
             velY = -3 + rand() % 2;
         } 
 
+        // funcion render
         render(paddleJ1Texture, paddleJ2Texture, paddleJ1Rect, paddleJ2Rect, ballTexture, ballRect);
     }
 
